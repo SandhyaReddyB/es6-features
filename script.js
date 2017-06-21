@@ -357,6 +357,367 @@ console.log(stud_ages[adults.indexOf(true)]);  //20
 console.log(stud_ages.findIndex(el => el>=18)); //1
 console.log(stud_ages.find(el => el>=18));      //20
 
+/////////////////////////////////////////////
+// Spread Operator
+
+
+/*
+*   ...ages: spread operator expands array ages into its components
+*   joining arrays: [...familyone, ...familytwo]
+*   spread operator can be applied on other similar data structures such as NodeList
+*/
+
+function add(a,b,c,d) {
+    return a+b+c+d;
+}
+console.log(add(1,3,89,23));    //116
+
+var numbers = [10,22,3,4];
+
+//ES5
+var sum5 = add.apply(null,numbers);
+console.log("ES5: Using apply method "+sum5);  //ES5: Using apply method 39
+
+//ES6
+const sum6 = add(...numbers);
+console.log("ES6: Using Spread Operator "+sum6); //ES6: Using Spread Operator 39
+
+//ES6- Joining Arrays
+const familyOne = ["Mike", "Ben"];
+const familyTwo = ["Anne", "Craig"];
+
+const jointFamily = [...familyOne, "Tom", ...familyTwo];
+console.log(jointFamily);      //["Mike", "Ben", "Tom", "Anne", "Craig"]
+
+
+//Spread operator can be used on other type of data structures as well
+const h = document.getElementsByTagName('h1')[0];
+const boxList = document.querySelectorAll('.box');
+
+const all = [h,...boxList];
+
+Array.from(all).forEach(el => el.style.color = 'purple');
+
+
+//Other examples
+var params = [ "hello", true, 7 ]
+var other = [ 1, 2, ...params ] // [ 1, 2, "hello", true, 7 ]
+
+function f (x, y, ...a) {
+    return (x + y) * a.length
+}
+console.log(f(1, 2, ...params));  //9
+
+var str = "foo"
+var chars = [ ...str ] 
+console.log(chars);    //["f", "o", "o"]
+
+
+/////////////////////////////////////
+//Rest Parameters
+
+/*
+*   Rest Parameters allow us to pass an arbitrary number of arguments into a function
+*   Rest Parameters uses same notation as spread operator but is exact "opposite of Spread Operator" because
+*     Spread operator takes an array and transforms it into single values whereas 
+*     Rest Parameters receive a couple of single values and transforms them into an array when we call a function with multiple parameters
+*   Difference between Spread Operator and Rest Parameters is the place in which we make use of them
+*     Spread Operator - used in function call
+*     Rest Parameters - used in function declaration to pass arbitrary number of arguments
+*/
+
+
+//ES5
+/* To receive an undefined number of arguments in a function,then no parameters are defined in function and then just use arguments keyword
+*  arguments variable is similar to this variable and iits a variable each execution context gets access to
+*  arguments is an array-like structure but not an array. To use it as parameter or to loop through it, first we need to transform it into array
+*
+*/
+/*
+function isFullAge5() {
+    //console.log(arguments);                            //[1990, 1988, 1996, callee: function, Symbol(Symbol.iterator): function]
+    var argsArr = Array.prototype.slice.call(arguments);
+    argsArr.forEach(function(curr) {
+        console.log((2017-curr)>=18);                    //true true true
+    });
+    
+}
+isFullAge5(1990, 1988,1996);                            //this function now works for any number of arguments
+
+
+//ES6
+function isFullAge6(...years) {                          //As soon as the function is called, arguments are converted into an array using spread operator
+    //console.log(years);                                //outputs an array
+    years.forEach(curr => 
+        console.log((2017-curr)>=18)                     //true false flase true
+    );
+}
+isFullAge6(1990,2000,2015,1988);
+*/
+
+
+//Another Similar Example: passing one definite argument along with other arbitrary arguments
+function isFullAge5(limit) {
+    //console.log(arguments);                               //[1990, 1988, 1996, callee: function, Symbol(Symbol.iterator): function]
+    var argsArr = Array.prototype.slice.call(arguments,1);  //starts slicing from argument at position 1
+    argsArr.forEach(function(curr) {
+        console.log((2017-curr)>=limit);                    //true true true
+    });
+    
+}
+isFullAge5(1990, 1988,1996);                             //this function now works for any number of arguments
+
+
+//ES6
+function isFullAge6(limit,...years) {                    //As soon as the function is called, arguments are converted into an array using spread operator
+    //console.log(years);                                //outputs an array
+    years.forEach(curr => 
+        console.log((2017-curr)>=limit)                  //true false flase true
+    );
+}
+isFullAge6(21,1990,2000,2015,1988);
+
+
+
+////////////////////////////////////
+//Default Parameters
+
+/*
+*   We use Default Parameters when we want one or more parameters to be preset
+*/
+
+//Note: JavaScript allows us to call functions without specify all the arguments
+
+//ES5 
+function ThomasFamily(firstName,lastName,nationality) {
+    //adding default values
+    lastName = (lastName === undefined) ? 'Thomas' : lastName;
+    nationality = (nationality === undefined) ? 'British' : nationality;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.nationality = nationality;
+}
+var emily = new ThomasFamily('Emily');  //sets lastName and nationality to undefined
+console.log(emily);                     //{firstName: "Emily", lastName: "Thomas", nationality: "British"}
+
+var tom = new ThomasFamily('Tom','Cruise','American');
+console.log(tom);                       //{firstName: "Tom", lastName: "Cruise", nationality: "American"}
+
+
+//ES6
+function ModiFamily(firstName, nationality = "Indian") {
+    this.firstName = firstName;
+    this.nationality = nationality;
+}
+var sandy = new ModiFamily('Sandhya');
+console.log(sandy);                      //{firstName: "Sandhya", nationality: "Indian"}
+
+var ben = new ModiFamily('Ben','British');
+console.log(ben);                        //{firstName: "Ben", nationality: "British"}
+
+
+
+////////////////////////////////////////////
+//Map - New Data Structure introduced in ES6
+
+/*
+*   A Map is a new Key-value data structure in ES6 and any primitve value can be used for key unlike object
+*   we can be fetch the "size" of the map unlike object
+*   we can "set" and "get" data
+*   we can "delete" data
+*   "has(key)" to check if data with a key exists
+*   delete all the data, use "clear()"
+*   Maps are iterable - forEach((value,key) => {}) , for(let [key,value] of question.entries()) {}
+*   Hence, Maps are better way than objects to create hash maps: 
+*     1) any primitive value can be used as key 2)easy to get map size 3)maps are iterable 4)easily add remove data from a map
+*/
+
+const question = new Map();
+
+question.set('question' , 'JavaScript current version?');     //uses string as key
+question.set(1, 'ES5');                                       //uses number as key
+question.set(2, 'ES2015');
+question.set(3, 'ES7');
+question.set('correct', 2);
+question.set(true, 'Correct Answer!');                        //uses boolean as key
+question.set(false, 'Wrong, Please try again!');
+
+console.log(question);                                        //{"question" => "JavaScript current version?", 1 => "ES5", 2 => "ES2015", 3 => "ES7", "correct" => 2…}
+
+console.log(question.get('question'));                        //JavaScript current version?
+console.log("Size of the map: "+question.size);                //Size of the map: 7
+
+if(question.has(3)) {
+   //question.delete(3);
+}
+
+//question.clear();
+
+//Iterating over Map - forEach
+question.forEach((value,key) => {
+    if(typeof(key) == 'number') {
+       console.log(`${key}: ${value}`)
+    }
+});
+
+//for of
+for(let [key,value] of question.entries()) {
+    if(typeof(key) == 'number') {
+       console.log(`${key}: ${value}`)
+    }
+}
+
+const ans = parseInt(prompt("Enter answer"));
+console.log(question.get(question.get('correct') === ans));    //Advantage of using boolean as key. No need to write if else statement
+
+/*
+if(question.get('correct') == ans) {
+    console.log(question.get(true));
+}
+else {
+    console.log(question.get(false));
+}
+*/
+
+
+//////////////////////////////
+//Classes
+
+/*
+*   Classes do not add anything new to the language, they are just syntactical sugar to the way we do prototypical inheritance in JavaScript
+*   Makes it easy to implement inheritance and create new objects based on blueprints (which are called Function contructors in ES5)
+*   Static Methods: Methods attached to a class but not inherited by object instances
+*   Class Definitions are not Hoisted. Unlike function constructors, we need to first implement a class and only then we can start using it in our code
+*   We can add only methods to classes but not properties. Inheriting properties to Object instances is not a best practice anyway.
+*/
+
+
+/*
+//ES5
+var Student = function(name,std,year) {
+    this.name = name;
+    this.std = std;
+    this.year = year;
+}
+Student.prototype.calcAge = function() {
+    console.log(2017-this.year);
+}
+
+var jerry = new Student('Jerry',9,1997);
+jerry.calcAge();  //20
+*/
+
+
+//ES6
+class Student {
+    constructor(name,std,year) {
+        this.name = name;
+        this.std = std;
+        this.year = year;
+    }
+    static greeting() {                    //static method attached to class but not inherited by object instances
+        console.log("Hi! there..");
+    }
+    calAge() {
+        console.log(2017-this.year);
+    }
+}
+
+var jerry = new Student('Jerry',9,1997);
+jerry.calAge();  //20
+
+Student.greeting();       //calling static method using classname as beind scenes a class is also a function and methods can be attached to it
+
+
+
+//////////////////////////////////////
+//Inheritance 
+
+/*
+Person - name, yearOfBirth, job, calculateAge()
+Athelete - olympics, medals, wonMedal()
+
+Athelete inherits Person
+
+Athelete - olympics, medals, wonMedal(), name, yearOfBirth, job, calculateAge()
+*/
+
+//ES5
+var Person5 = function(name,yearOfBirth,job) {
+    this.name = name;
+    this.yearOfBirth = yearOfBirth;
+    this.job = job;
+}
+Person5.prototype.calculateAge = function() {
+    console.log(2017-this.yearOfBirth);
+}
+
+var Athlete5 = function(name,yearOfBirth,job,olympics,medals) {
+    
+    Person5.call(this,name,yearOfBirth,job);
+    
+    this.olympcis = olympics;
+    this.medals = medals;
+}
+
+//To create correct prototype chain because Object.create() allows us to manually set prototype of object
+//Athlete5 inherits Person5
+Athlete5.prototype = Object.create(Person5.prototype);
+
+//only Athlete5 instances can use this method. Person5 instances cannot use this
+Athlete5.prototype.wonMedal = function() {
+     console.log(`${this.name} won ${this.medals} medals`);
+}
+
+var ushaAthlete5 = new Athlete5('Usha', 1990, 'Runner', 3, 10);
+ushaAthlete5.calculateAge();  //27
+ushaAthlete5.wonMedal();      //Ushawon 10 medals
+
+
+
+//ES6
+class Person6 {
+    constructor(name,yearOfBirth,job) {
+        this.name = name;
+        this.yearOfBirth = yearOfBirth;
+        this.job = job;
+    }
+    static greeting() {                    //static method attached to class but not inherited by object instances
+        console.log("Hi! there..");
+    }
+    calAge() {
+        console.log(2017-this.yearOfBirth);
+    }
+}
+
+class Athlete6 extends Person6 {
+     constructor(name,year,job,olympics,medals) {
+        super(name,year,job);
+        this.olympics = olympics;
+        this.medals = medals;
+    }
+    wonMedal() {
+        console.log(`${this.name} won ${this.medals} medals`);
+    }
+}
+var vijay = new Athlete6('Vijay',1988,'Boxer',3,7);
+vijay.calAge();   //29
+vijay.wonMedal(); //Vijay won 7 medals
+
+
+
+/////////////////////////////////
+//Transpilation with Babel
+
+/*
+- install nodej,npm
+- downlad babel package : npm install --save-dev babel-preset-es2015 babel-polyfill
+- Transpile script.js written in ES: 
+   ./node_modules/.bin/babel --presets es2015 script.js --out-file script-transpiled.js
+- Replace script.js with script-transpiled.js in index.html file
+- code for features which are new in ES6 such as Map do not get transpiled with above
+- include polyfill.min.js from node_modules/babel-polyfill/dist/polyfill.min.js in index.html file
+*/
 
 
 
